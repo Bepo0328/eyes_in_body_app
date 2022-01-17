@@ -1,3 +1,6 @@
+import 'package:eyes_in_body_app/data/data.dart';
+import 'package:eyes_in_body_app/utils.dart';
+import 'package:eyes_in_body_app/view/food.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -32,7 +35,46 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Container(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.white,
+              builder: (ctx) {
+                return SizedBox(
+                  height: 200.0,
+                  child: Column(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => FoodAddPage(
+                                        food: Food(
+                                          date:
+                                              Utils.getFormTime(DateTime.now()),
+                                          type: 0,
+                                          kcal: 0,
+                                          image: '',
+                                          memo: '',
+                                        ),
+                                      )));
+                        },
+                        child: const Text('식단'),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text('운동'),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text('인바디'),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        },
         child: const Icon(Icons.add),
       ),
     );
