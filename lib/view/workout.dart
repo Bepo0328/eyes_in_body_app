@@ -1,24 +1,24 @@
 import 'package:eyes_in_body_app/data/data.dart';
 import 'package:eyes_in_body_app/data/database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 
-class FoodAddPage extends StatefulWidget {
-  const FoodAddPage({Key? key, required this.food}) : super(key: key);
+class WorkoutAddPage extends StatefulWidget {
+  const WorkoutAddPage({Key? key, required this.workout}) : super(key: key);
 
-  final Food food;
+  final Workout workout;
 
   @override
-  _FoodAddPageState createState() => _FoodAddPageState();
+  _WorkoutAddPageState createState() => _WorkoutAddPageState();
 }
 
-class _FoodAddPageState extends State<FoodAddPage> {
-  TextEditingController kcalController = TextEditingController();
+class _WorkoutAddPageState extends State<WorkoutAddPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
   TextEditingController memoController = TextEditingController();
 
-  Food get food => widget.food;
+  Workout get workout => widget.workout;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +27,12 @@ class _FoodAddPageState extends State<FoodAddPage> {
         actions: [
           TextButton(
             onPressed: () async {
-              food.memo = memoController.text;
-              food.kcal = int.tryParse(kcalController.text) ?? 0;
+              workout.memo = memoController.text;
+              workout.name = nameController.text;
+              workout.time = int.tryParse(timeController.text) ?? 0;
 
               final dbHelper = DatabaseHelper.instance;
-              await dbHelper.insertFood(food);
+              await dbHelper.insertWorkout(workout);
               Navigator.pop(context);
             },
             child: const Text(
@@ -47,10 +48,20 @@ class _FoodAddPageState extends State<FoodAddPage> {
             if (idx == 0) {
               return Container(
                 margin: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 20.0),
-                child: const Text(
-                  '오늘 어떤 음식을 드셨나요?',
-                  style: TextStyle(fontSize: 20.0),
+                  horizontal: 16.0,
+                  vertical: 20.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      '어떤 운동을 하셨나요?',
+                      style: TextStyle(fontSize: 20.0),
+                    ),
+                    TextField(
+                      controller: nameController,
+                    ),
+                  ],
                 ),
               );
             } else if (idx == 1) {
@@ -63,13 +74,13 @@ class _FoodAddPageState extends State<FoodAddPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      '칼로리',
+                      '운동시간',
                       style: TextStyle(fontSize: 16.0),
                     ),
                     Container(
                       width: 100.0,
                       child: TextField(
-                        controller: kcalController,
+                        controller: timeController,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -94,10 +105,10 @@ class _FoodAddPageState extends State<FoodAddPage> {
                     },
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: food.image!.isEmpty
-                          ? Image.asset('assets/img/rice.png')
+                      child: workout.image!.isEmpty
+                          ? Image.asset('assets/img/workout.png')
                           : AssetThumb(
-                              asset: Asset(food.image, 'food.png', 0, 0),
+                              asset: Asset(workout.image, 'workout.png', 0, 0),
                               width: 300,
                               height: 300,
                             ),
@@ -106,27 +117,6 @@ class _FoodAddPageState extends State<FoodAddPage> {
                 ),
               );
             } else if (idx == 3) {
-              return Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 20.0,
-                ),
-                child: CupertinoSegmentedControl(
-                  children: const {
-                    0: Text('아침'),
-                    1: Text('점심'),
-                    2: Text('저녁'),
-                    3: Text('간식'),
-                  },
-                  onValueChanged: (idx) {
-                    setState(() {
-                      food.type = idx as int?;
-                    });
-                  },
-                  groupValue: food.type,
-                ),
-              );
-            } else if (idx == 4) {
               return Container(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -158,7 +148,7 @@ class _FoodAddPageState extends State<FoodAddPage> {
               return Container();
             }
           },
-          itemCount: 5,
+          itemCount: 4,
         ),
       ),
     );
@@ -175,7 +165,7 @@ class _FoodAddPageState extends State<FoodAddPage> {
     }
 
     setState(() {
-      food.image = __img.first.identifier;
+      workout.image = __img.first.identifier;
     });
   }
 }
