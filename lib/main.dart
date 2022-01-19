@@ -6,6 +6,7 @@ import 'package:eyes_in_body_app/view/card.dart';
 import 'package:eyes_in_body_app/view/food.dart';
 import 'package:eyes_in_body_app/view/workout.dart';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -67,6 +68,10 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (idx) {
           setState(() {
             currentIndex = idx;
+            if (currentIndex == 0 || currentIndex == 1) {
+              time = DateTime.now();
+              getHistories();
+            }
           });
         },
         type: BottomNavigationBarType.fixed,
@@ -101,13 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Column(
                     children: [
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (ctx) => FoodAddPage(
                                 food: Food(
-                                  date: Utils.getFormTime(DateTime.now()),
+                                  date: Utils.getFormTime(time),
                                   type: 0,
                                   kcal: 0,
                                   image: '',
@@ -116,17 +121,18 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                           );
+                          getHistories();
                         },
                         child: const Text('식단'),
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (ctx) => WorkoutAddPage(
                                 workout: Workout(
-                                  date: Utils.getFormTime(DateTime.now()),
+                                  date: Utils.getFormTime(time),
                                   time: 0,
                                   image: '',
                                   name: '',
@@ -135,25 +141,27 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                           );
+                          getHistories();
                         },
                         child: const Text('운동'),
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (ctx) => EyeBodyAddPage(
                                 eyeBody: EyeBody(
-                                  date: Utils.getFormTime(DateTime.now()),
+                                  date: Utils.getFormTime(time),
                                   weight: 0,
                                   image: '',
                                 ),
                               ),
                             ),
                           );
+                          getHistories();
                         },
-                        child: const Text('인바디'),
+                        child: const Text('눈바디'),
                       ),
                     ],
                   ),
@@ -181,50 +189,108 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getMainPage() {
     return Container(
-        child: Column(
-      children: [
-        Container(
-          height: 140.0,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: List.generate(todayFood.length, (idx) {
-              return Container(
-                width: 140.0,
-                child: FoodCard(food: todayFood[idx]),
-              );
-            }),
+      child: Column(
+        children: [
+          todayFood.isEmpty ? Container() : Container(
+            height: 140.0,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: List.generate(todayFood.length, (idx) {
+                return InkWell(
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => FoodAddPage(
+                          food: todayFood[idx],
+                        ),
+                      ),
+                    );
+                    getHistories();
+                  },
+                  child: Container(
+                    width: 140.0,
+                    child: FoodCard(food: todayFood[idx]),
+                  ),
+                );
+              }),
+            ),
           ),
-        ),
-        Container(
-          height: 140.0,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: List.generate(todayWorkout.length, (idx) {
-              return Container(
-                width: 140.0,
-                child: WorkoutCard(workout: todayWorkout[idx]),
-              );
-            }),
+          todayWorkout.isEmpty ? Container() : Container(
+            height: 140.0,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: List.generate(todayWorkout.length, (idx) {
+                return InkWell(
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => WorkoutAddPage(
+                          workout: todayWorkout[idx],
+                        ),
+                      ),
+                    );
+                    getHistories();
+                  },
+                  child: Container(
+                    width: 140.0,
+                    child: WorkoutCard(workout: todayWorkout[idx]),
+                  ),
+                );
+              }),
+            ),
           ),
-        ),
-        Container(
-          height: 140.0,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: List.generate(todayEyeBody.length, (idx) {
-              return Container(
-                width: 140.0,
-                child: EyeBodyCard(eyeBody: todayEyeBody[idx]),
-              );
-            }),
+          todayEyeBody.isEmpty ? Container() : Container(
+            height: 140.0,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: List.generate(todayEyeBody.length, (idx) {
+                return InkWell(
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => EyeBodyAddPage(
+                          eyeBody: todayEyeBody[idx],
+                        ),
+                      ),
+                    );
+                    getHistories();
+                  },
+                  child: Container(
+                    width: 140.0,
+                    child: EyeBodyCard(eyeBody: todayEyeBody[idx]),
+                  ),
+                );
+              }),
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 
   Widget getHistoryPage() {
-    return Container();
+    return Container(
+      child: ListView(
+        children: [
+          TableCalendar(
+            focusedDay: time,
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime.utc(2030, 3, 14),
+            onDaySelected: (selectedDay, focusedDay) {
+              time = selectedDay;
+              getHistories();
+            },
+            selectedDayPredicate: (day) {
+              return isSameDay(time, day);
+            },
+          ),
+          getMainPage(),
+        ],
+      ),
+    );
   }
 
   Widget getChartPage() {

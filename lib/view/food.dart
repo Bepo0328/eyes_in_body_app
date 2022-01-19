@@ -21,6 +21,13 @@ class _FoodAddPageState extends State<FoodAddPage> {
   Food get food => widget.food;
 
   @override
+  void initState() {
+    kcalController.text = food.kcal.toString();
+    memoController.text = food.memo.toString();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
