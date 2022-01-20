@@ -30,6 +30,7 @@ class _FoodAddPageState extends State<FoodAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3A3A3C),
       appBar: AppBar(
         actions: [
           TextButton(
@@ -57,7 +58,10 @@ class _FoodAddPageState extends State<FoodAddPage> {
                     horizontal: 16.0, vertical: 20.0),
                 child: const Text(
                   '오늘 어떤 음식을 드셨나요?',
-                  style: TextStyle(fontSize: 20.0),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
                 ),
               );
             } else if (idx == 1) {
@@ -71,7 +75,10 @@ class _FoodAddPageState extends State<FoodAddPage> {
                   children: [
                     const Text(
                       '칼로리',
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
                     ),
                     Container(
                       width: 100.0,
@@ -80,6 +87,14 @@ class _FoodAddPageState extends State<FoodAddPage> {
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                        ),
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -144,7 +159,10 @@ class _FoodAddPageState extends State<FoodAddPage> {
                   children: [
                     const Text(
                       '메모',
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 12.0),
                     TextField(
@@ -154,7 +172,10 @@ class _FoodAddPageState extends State<FoodAddPage> {
                       controller: memoController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
                         ),
                       ),
                     )

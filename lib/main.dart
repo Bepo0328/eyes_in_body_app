@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:intl/intl.dart';
 
 FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
@@ -59,6 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final dbHelper = DatabaseHelper.instance;
   DateTime time = DateTime.now();
+
+  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   void getHistories() async {
     int day = Utils.getFormTime(time);
@@ -131,9 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3A3A3C),
       appBar: AppBar(),
       body: getPage(),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black54,
+        unselectedItemColor: Colors.white,
         onTap: (idx) {
           setState(() {
             currentIndex = idx;
@@ -355,6 +361,35 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ListView(
         children: [
           TableCalendar(
+            calendarFormat: _calendarFormat,
+            onFormatChanged: (format) {
+              setState(() {
+                _calendarFormat = format;
+              });
+            },
+            calendarBuilders: CalendarBuilders(
+              dowBuilder: (context, day) {
+                if (day.weekday == DateTime.sunday) {
+                  final text = DateFormat.E().format(day);
+
+                  return Center(
+                    child: Text(
+                      text,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  );
+                } else if (day.weekday == DateTime.saturday) {
+                  final text = DateFormat.E().format(day);
+
+                  return Center(
+                    child: Text(
+                      text,
+                      style: const TextStyle(color: Colors.blue),
+                    ),
+                  );
+                }
+              },
+            ),
             focusedDay: time,
             firstDay: DateTime.utc(2010, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
